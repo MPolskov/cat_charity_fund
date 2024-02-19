@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 
 from pydantic import BaseModel, Field, validator
 
@@ -8,11 +9,15 @@ class CharityProjectBase(BaseModel):
 
 
 class CharityProjectCreate(CharityProjectBase):
-    pass
+    name: str
+    description: str
+    full_amount: int
 
 
 class CharityProjectUpdate(CharityProjectBase):
-    pass
+    name: str
+    description: str
+    full_amount: int
 
     # @validator('name')
     # def name_cant_be_numeric(cls, value: str):
@@ -22,6 +27,14 @@ class CharityProjectUpdate(CharityProjectBase):
 
 
 class CharityProjectDB(CharityProjectCreate):
+    name: str
+    description: str
+    full_amount: int
+    id: int
+    invested_amount: int
+    fully_invested: bool
+    create_date: datetime
+    close_date: datetime
 
     class Config:
         orm_mode = True
