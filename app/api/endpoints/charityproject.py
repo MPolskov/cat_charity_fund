@@ -11,6 +11,8 @@ from app.schemas.charityproject import (
 )
 from app.api.validators import (
     check_project_exists,
+    check_invested_amount_delete,
+    check_full_amount_update
 )
 from app.core.user import current_superuser
 
@@ -57,6 +59,7 @@ async def remove_project(
 ):
     """Только для суперюзеров."""
     project = await check_project_exists(project_id, session)
+    await check_invested_amount_delete(project)
     project = await charity_project_crud.remove(project, session)
     return project
 
@@ -77,8 +80,8 @@ async def partially_update_project(
         project_id, session
     )
 
-    # if obj_in.name is not None:
-    #     await check_name_duplicate(obj_in.name, session)
+    if obj_in.full_amount is not None:
+        await check_full_amount_update(project, obj_in.full_amount)
 
     project = await charity_project_crud.update(
         project, obj_in, session

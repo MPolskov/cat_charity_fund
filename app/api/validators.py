@@ -14,6 +14,27 @@ async def check_project_exists(
     if project is None:
         raise HTTPException(
             status_code=404,
-            detail='Проект не найден!'
+            detail='Проект не найден!'  # TODO вынести в константы
         )
     return project
+
+
+async def check_invested_amount_delete(
+        project: CharityProject
+) -> None:
+    if project.invested_amount > 0:
+        raise HTTPException(
+            status_code=400,
+            detail='В проект были внесены средства, не подлежит удалению!'  # TODO вынести в константы
+        )
+
+
+async def check_full_amount_update(
+        project: CharityProject,
+        new_amount: int
+):
+    if project.full_amount > new_amount:
+        raise HTTPException(
+            status_code=400,
+            detail='Нелья установить значение full_amount меньше уже вложенной суммы.'  # TODO вынести в константы
+        )

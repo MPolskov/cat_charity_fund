@@ -1,4 +1,5 @@
 from typing import Optional
+from datetime import datetime
 
 from pydantic import BaseModel, Field, validator
 
@@ -8,7 +9,8 @@ class DonationBase(BaseModel):
 
 
 class DonationCreate(DonationBase):
-    pass
+    full_amount: int
+    comment: Optional[str]
 
 
 class DonationUpdate(DonationBase):
@@ -22,6 +24,10 @@ class DonationUpdate(DonationBase):
 
 
 class DonationDB(DonationCreate):
+    full_amount: int
+    comment: Optional[str]
+    id: int
+    create_date: datetime
 
     class Config:
         orm_mode = True
