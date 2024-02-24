@@ -7,12 +7,9 @@ from app.crud.donation import donation_crud
 from app.models import User
 from app.schemas.donation import (
     DonationCreate,
-    DonationUpdate,
     DonationDB
 )
-from app.api.validators import (
-
-)
+# from app.api.validators import ()
 from app.core.user import current_superuser, current_user
 
 router = APIRouter()
@@ -39,7 +36,7 @@ async def create_donation(
     user: User = Depends(current_user)
 ):
     # TODO add validators
-    new_donation = donation_crud.create(donation, session, user)
+    new_donation = await donation_crud.create(donation, session, user)
     return new_donation
 
 

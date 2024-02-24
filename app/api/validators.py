@@ -6,6 +6,18 @@ from app.crud.donation import donation_crud
 from app.models import CharityProject, Donation, User
 
 
+async def check_name_duplicate(
+        project_name: str,
+        session: AsyncSession,
+) -> None:
+    room_id = await charity_project_crud.get_project_id_by_name(project_name, session)
+    if room_id is not None:
+        raise HTTPException(
+            status_code=400,
+            detail='Проект с таким именем уже существует!',  # TODO вынести в константы
+        )
+
+
 async def check_project_exists(
         project_id: int,
         session: AsyncSession,

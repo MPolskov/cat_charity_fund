@@ -10,11 +10,13 @@ from app.schemas.charityproject import (
     CharityProjectUpdate
 )
 from app.api.validators import (
+    check_name_duplicate,
     check_project_exists,
     check_invested_amount_delete,
     check_full_amount_update
 )
 from app.core.user import current_superuser
+from app.sevices.investing import investing_in_new_project
 
 router = APIRouter()
 
@@ -42,8 +44,9 @@ async def create_project(
     session: AsyncSession = Depends(get_async_session),
 ):
     """Только для суперюзеров."""
-    # await check_name_duplicate(meeting_room.name, session)
+    await check_name_duplicate(project.name, session)
     new_project = await charity_project_crud.create(project, session)
+    new_project = await investing_in_new_project(new_project, session)
     return new_project
 
 
@@ -79,10 +82,10 @@ async def partially_update_project(
     project = await check_project_exists(
         project_id, session
     )
-
+    if obj_in.name is not None:
+        await check_name_duplicate(obj_in.name, session)
     if obj_in.full_amount is not None:
         await check_full_amount_update(project, obj_in.full_amount)
-
     project = await charity_project_crud.update(
         project, obj_in, session
     )

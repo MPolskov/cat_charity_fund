@@ -1,31 +1,19 @@
 from typing import Optional
 from datetime import datetime
 
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, PositiveInt
 
 
 class DonationBase(BaseModel):
-    pass
+    full_amount: PositiveInt
+    comment: Optional[str]
 
 
 class DonationCreate(DonationBase):
-    full_amount: int
-    comment: Optional[str]
-
-
-class DonationUpdate(DonationBase):
     pass
 
-    # @validator('name')
-    # def name_cant_be_numeric(cls, value: str):
-    #     if value is None:
-    #         raise ValueError('Имя переговорки не может быть пустым!')
-    #     return value
 
-
-class DonationDB(DonationCreate):
-    full_amount: int
-    comment: Optional[str]
+class DonationDB(DonationBase):
     id: int
     create_date: datetime
 
