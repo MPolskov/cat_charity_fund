@@ -4,7 +4,7 @@ from enum import Enum
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.charityproject import charity_project_crud
+from app.crud.charity_project import charity_project_crud
 from app.models import CharityProject
 
 
@@ -55,8 +55,8 @@ async def check_invested_amount_delete(
 async def check_full_amount_update(
         project: CharityProject,
         new_amount: int
-):
-    if project.full_amount > new_amount:
+) -> None:
+    if project.invested_amount > new_amount:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
             detail=ErrorMSG.BELOW_DEPOSIT
