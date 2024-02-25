@@ -16,7 +16,8 @@ from app.api.validators import (
     check_full_amount_update
 )
 from app.core.user import current_superuser
-from app.sevices.investing import investing_in_new_project
+from app.sevices.investing import investing
+from app.models import Donation
 
 router = APIRouter()
 
@@ -46,7 +47,7 @@ async def create_project(
     """Только для суперюзеров."""
     await check_name_duplicate(project.name, session)
     new_project = await charity_project_crud.create(project, session)
-    new_project = await investing_in_new_project(new_project, session)
+    new_project = await investing(new_project, Donation, session)
     return new_project
 
 
