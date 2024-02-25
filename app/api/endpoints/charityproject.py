@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends
-
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_async_session
+from app.core.user import current_superuser
 from app.crud.charityproject import charity_project_crud
 from app.schemas.charityproject import (
     CharityProjectDB,
@@ -15,7 +15,6 @@ from app.api.validators import (
     check_invested_amount_delete,
     check_full_amount_update
 )
-from app.core.user import current_superuser
 from app.sevices.investing import investing
 from app.models import Donation
 
@@ -25,11 +24,15 @@ router = APIRouter()
 @router.get(
     '/',
     response_model=list[CharityProjectDB],
-    # response_model_exclude_none=True,
+    response_model_exclude_none=True,
 )
 async def get_all_projects(
     session: AsyncSession = Depends(get_async_session),
 ):
+    """
+    Получает список всех проектов.
+    Досутпно любому пользователюю
+    """
     all_projects = await charity_project_crud.get_multi(session)
     return all_projects
 
@@ -37,14 +40,17 @@ async def get_all_projects(
 @router.post(
     '/',
     response_model=CharityProjectDB,
-    # response_model_exclude_none=True,
+    response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
 )
 async def create_project(
     project: CharityProjectCreate,
     session: AsyncSession = Depends(get_async_session),
 ):
-    """Только для суперюзеров."""
+    """
+    Создает новый проект.
+    Только для суперюзеров.
+    """
     await check_name_duplicate(project.name, session)
     new_project = await charity_project_crud.create(project, session)
     new_project = await investing(new_project, Donation, session)
@@ -54,14 +60,19 @@ async def create_project(
 @router.delete(
     '/{project_id}',
     response_model=CharityProjectDB,
-    # response_model_exclude_none=True,
+    response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
 )
 async def remove_project(
         project_id: int,
         session: AsyncSession = Depends(get_async_session),
 ):
-    """Только для суперюзеров."""
+    """
+    Удаляет указанный проект.
+    Нельзя удалить проект в который уже внесены пожертвования
+    или проект закрыт.
+    Только для суперюзеров.
+    """
     project = await check_project_exists(project_id, session)
     await check_invested_amount_delete(project)
     project = await charity_project_crud.remove(project, session)
@@ -71,7 +82,7 @@ async def remove_project(
 @router.patch(
     '/{project_id}',
     response_model=CharityProjectDB,
-    # response_model_exclude_none=True,
+    response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
 )
 async def partially_update_project(
@@ -79,7 +90,10 @@ async def partially_update_project(
         obj_in: CharityProjectUpdate,
         session: AsyncSession = Depends(get_async_session),
 ):
-    """Только для суперюзеров."""
+    """
+    Изменяет указанный проект.
+    Только для суперюзеров.
+    """
     project = await check_project_exists(
         project_id, session
     )
