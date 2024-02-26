@@ -35,6 +35,7 @@ async def get_all_donations(
 @router.post(
     '/',
     response_model=DonationDB,
+    response_model_exclude_none=True,
 )
 async def create_donation(
     donation: DonationCreate,

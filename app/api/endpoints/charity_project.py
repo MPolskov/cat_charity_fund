@@ -13,7 +13,8 @@ from app.api.validators import (
     check_name_duplicate,
     check_project_exists,
     check_invested_amount_delete,
-    check_full_amount_update
+    check_full_amount_update,
+    check_close_project
 )
 from app.sevices.investing import investing
 from app.models import Donation
@@ -75,6 +76,7 @@ async def remove_project(
     """
     project = await check_project_exists(project_id, session)
     await check_invested_amount_delete(project)
+    await check_close_project(project)
     project = await charity_project_crud.remove(project, session)
     return project
 
@@ -97,6 +99,7 @@ async def partially_update_project(
     project = await check_project_exists(
         project_id, session
     )
+    await check_close_project(project)
     if obj_in.name is not None:
         await check_name_duplicate(obj_in.name, session)
     if obj_in.full_amount is not None:

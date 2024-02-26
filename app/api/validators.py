@@ -11,8 +11,9 @@ from app.models import CharityProject
 class ErrorMSG(str, Enum):
     EXIST = 'Проект с таким именем уже существует!'
     NOT_FOUND = 'Проект не найден!'
-    CAN_NOT_DELETE = 'В проект были внесены средства, не подлежит удалению!'
+    INVESTED = 'В проект были внесены средства, не подлежит удалению!'
     BELOW_DEPOSIT = 'Нелья установить значение full_amount меньше уже вложенной суммы.'
+    CLOSED = 'Закрытый проект нельзя редактировать!'
 
 
 async def check_name_duplicate(
@@ -48,7 +49,7 @@ async def check_invested_amount_delete(
     if project.invested_amount > 0:
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
-            detail=ErrorMSG.CAN_NOT_DELETE
+            detail=ErrorMSG.INVESTED
         )
 
 
@@ -60,4 +61,14 @@ async def check_full_amount_update(
         raise HTTPException(
             status_code=HTTPStatus.BAD_REQUEST,
             detail=ErrorMSG.BELOW_DEPOSIT
+        )
+
+
+async def check_close_project(
+        project: CharityProject
+) -> None:
+    if project.fully_invested is True:
+        raise HTTPException(
+            status_code=HTTPStatus.BAD_REQUEST,
+            detail=ErrorMSG.CLOSED
         )
