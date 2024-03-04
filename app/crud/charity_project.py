@@ -8,15 +8,6 @@ from app.models import CharityProject
 
 
 class CRUDCharityProject(CRUDBase):
-    async def create(
-            self,
-            obj_in,
-            session: AsyncSession
-    ):
-        obj_in_data = obj_in.dict()
-        db_obj = self.model(**obj_in_data)
-        session.add(db_obj)
-        return db_obj
 
     async def get_project_id_by_name(
             self,

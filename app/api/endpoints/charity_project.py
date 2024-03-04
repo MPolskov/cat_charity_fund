@@ -16,7 +16,7 @@ from app.api.validators import (
     check_full_amount_update,
     check_close_project
 )
-from app.sevices.investing import investing
+from app.services.investing import investing
 from app.models import Donation
 
 router = APIRouter()
@@ -61,7 +61,6 @@ async def create_project(
 @router.delete(
     '/{project_id}',
     response_model=CharityProjectDB,
-    # response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
 )
 async def remove_project(
@@ -84,7 +83,6 @@ async def remove_project(
 @router.patch(
     '/{project_id}',
     response_model=CharityProjectDB,
-    # response_model_exclude_none=True,
     dependencies=[Depends(current_superuser)],
 )
 async def partially_update_project(

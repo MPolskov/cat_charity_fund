@@ -10,7 +10,7 @@ from app.schemas.donation import (
     DonationDBSuperUser
 )
 from app.core.user import current_superuser, current_user
-from app.sevices.investing import investing
+from app.services.investing import investing
 
 router = APIRouter()
 

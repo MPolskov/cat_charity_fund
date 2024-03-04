@@ -1,19 +1,11 @@
 from http import HTTPStatus
-from enum import Enum
 
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.crud.charity_project import charity_project_crud
 from app.models import CharityProject
-
-
-class ErrorMSG(str, Enum):
-    EXIST = 'Проект с таким именем уже существует!'
-    NOT_FOUND = 'Проект не найден!'
-    INVESTED = 'В проект были внесены средства, не подлежит удалению!'
-    BELOW_DEPOSIT = 'Нелья установить значение full_amount меньше уже вложенной суммы.'
-    CLOSED = 'Закрытый проект нельзя редактировать!'
+from app.msg import ErrorMSG
 
 
 async def check_name_duplicate(

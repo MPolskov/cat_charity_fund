@@ -7,6 +7,8 @@ from pydantic import (
     PositiveInt, NonNegativeInt
 )
 
+from app.msg import ErrorMSG
+
 
 class CharityProjectBase(BaseModel):
     name: Optional[str] = Field(None, min_length=1, max_length=100)
@@ -23,13 +25,13 @@ class CharityProjectUpdate(CharityProjectBase):
     @validator('name')
     def name_cant_be_empty(cls, value: str):
         if value is None or value == '':
-            raise ValueError('Имя проекта не может быть пустым!')
+            raise ValueError(ErrorMSG.NO_NAME)
         return value
 
     @validator('description')
     def description_cant_be_empty(cls, value: str):
         if value is None or value == '':
-            raise ValueError('Описание проекта не может быть пустым!')
+            raise ValueError(ErrorMSG.NO_DESCRIPTION)
         return value
 
 
