@@ -8,10 +8,18 @@ from pydantic import (
 )
 
 from app.msg import ErrorMSG
+from app.schemas.constants import (
+    MIN_LENGHT_NAME,
+    MAX_LENGHT_NAME
+)
 
 
 class CharityProjectBase(BaseModel):
-    name: Optional[str] = Field(None, min_length=1, max_length=100)
+    name: Optional[str] = Field(
+        None,
+        min_length=MIN_LENGHT_NAME,
+        max_length=MAX_LENGHT_NAME
+    )
     description: Optional[str]
     full_amount: Optional[PositiveInt]
 
@@ -36,7 +44,11 @@ class CharityProjectUpdate(CharityProjectBase):
 
 
 class CharityProjectCreate(CharityProjectUpdate):
-    name: str = Field(..., min_length=1, max_length=100)
+    name: str = Field(
+        ...,
+        min_length=MIN_LENGHT_NAME,
+        max_length=MAX_LENGHT_NAME
+    )
     description: str
     full_amount: PositiveInt
 

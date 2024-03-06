@@ -34,8 +34,7 @@ async def get_all_projects(
     Получает список всех проектов.
     Досутпно любому пользователюю
     """
-    all_projects = await charity_project_crud.get_multi(session)
-    return all_projects
+    return await charity_project_crud.get_multi(session)
 
 
 @router.post(
@@ -54,8 +53,7 @@ async def create_project(
     """
     await check_name_duplicate(project.name, session)
     new_project = await charity_project_crud.create(project, session)
-    new_project = await investing(new_project, Donation, session)
-    return new_project
+    return await investing(new_project, Donation, session)
 
 
 @router.delete(
@@ -76,8 +74,7 @@ async def remove_project(
     project = await check_project_exists(project_id, session)
     await check_invested_amount_delete(project)
     await check_close_project(project)
-    project = await charity_project_crud.remove(project, session)
-    return project
+    return await charity_project_crud.remove(project, session)
 
 
 @router.patch(
@@ -102,7 +99,4 @@ async def partially_update_project(
         await check_name_duplicate(obj_in.name, session)
     if obj_in.full_amount is not None:
         await check_full_amount_update(project, obj_in.full_amount)
-    project = await charity_project_crud.update(
-        project, obj_in, session
-    )
-    return project
+    return await charity_project_crud.update(project, obj_in, session)

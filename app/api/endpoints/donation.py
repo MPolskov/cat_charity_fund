@@ -28,8 +28,7 @@ async def get_all_donations(
     Получает список всех пожертвований.
     Только для суперюзеров.
     """
-    all_donations = await donation_crud.get_multi(session)
-    return all_donations
+    return await donation_crud.get_multi(session)
 
 
 @router.post(
@@ -47,8 +46,7 @@ async def create_donation(
     Доступно зарегистрированному пользователю.
     """
     new_donation = await donation_crud.create(donation, session, user)
-    new_donation = await investing(new_donation, CharityProject, session)
-    return new_donation
+    return await investing(new_donation, CharityProject, session)
 
 
 @router.get(
@@ -63,7 +61,4 @@ async def get_user_donations(
     Получает список всех пожертвований для текущего пользователя.
     Доступно зарегистрированному пользователю.
     """
-    all_user_donations = await donation_crud.get_donations_by_user(
-        user, session
-    )
-    return all_user_donations
+    return await donation_crud.get_donations_by_user(user, session)

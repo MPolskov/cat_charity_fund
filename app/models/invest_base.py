@@ -9,3 +9,6 @@ class InvestModelBase:
     fully_invested = Column(Boolean, default=False, nullable=False)
     create_date = Column(DateTime, default=datetime.utcnow, nullable=False)
     close_date = Column(DateTime)
+
+    def get_remains(self):
+        return self.full_amount - self.invested_amount
